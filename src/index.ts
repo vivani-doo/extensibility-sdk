@@ -1,6 +1,8 @@
 import { AppContext } from './context/AppContext';
 import { DiagnosticContext } from './context/DiagnosticContext';
 import runtime, { RuntimeContext } from './context/RuntimeContext';
+import { PredefinedAddonHostMode } from './enums/PredefinedAddonHostMode';
+import { PredefinedChromeState } from './enums/PredefinedChromeState';
 import { PredefinedNavigationDestination } from './enums/PredefinedNavigationDestination';
 import { PredefinedNotificationType } from './enums/PredefinedNotificationType';
 import { EventOrigin } from './logging/EventOrigin';
@@ -231,6 +233,25 @@ export class ExtensibilitySdk {
   ) => {
     this.messageSender.navigate(destination, id, params);
   };
+
+    /**
+   * Sends request to Meet hosting app to update environment
+   *
+   * @memberof MessageSender
+   */
+  public environment = async (chrome?: PredefinedChromeState, mode?: PredefinedAddonHostMode, panel?: string) => {
+    this.messageSender.environment(chrome, mode, panel)
+  }
+
+
+  /**
+   * Sends request to Meet hosting app to take a snapshot
+   *
+   * @memberof MessageSender
+   */
+  public snapshot = async () => {
+        this.messageSender.snapshot()
+  }
 
   private messageSender = new MessageSender(this.initTask);
   private messageReceiver = new MessageReceiver(this.resolveInitPromise, this.onLoad);
