@@ -15,6 +15,7 @@ import { ClientRequestNotifyMessage } from '../messages/client/ClientRequestNoti
 import { ClientRequestSnapshotMessage } from '../messages/client/ClientRequestSnapshotMessage';
 import { Message } from '../messages/Message';
 import { MessageType } from '../messages/MessageType';
+import { Task } from './Task';
 
 export class MessageSender {
   /**

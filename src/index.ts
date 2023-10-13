@@ -1,5 +1,5 @@
-import { InitializationContext } from './context/InitializationContext';
 import { DiagnosticContext } from './context/DiagnosticContext';
+import { InitializationContext } from './context/InitializationContext';
 import runtime, { RuntimeContext } from './context/RuntimeContext';
 import { PredefinedAddonHostMode } from './enums/PredefinedAddonHostMode';
 import { PredefinedChromeState } from './enums/PredefinedChromeState';
@@ -15,6 +15,7 @@ import { Message } from './messages/Message';
 import { MessageType } from './messages/MessageType';
 import { MessageReceiver } from './sdk/MessageReceiver';
 import { MessageSender } from './sdk/MessageSender';
+import { Task } from './sdk/Task';
 
 export { ConfigurationItem } from './configuration/ConfigurationItem';
 export { ConfigurationItemOption } from './configuration/ConfigurationItemOption';
@@ -33,6 +34,7 @@ export { RuntimeContext } from './context/RuntimeContext';
 export { SessionContext } from './context/SessionContext';
 export { UrlParam } from './context/UrlParam';
 export { UserContext } from './context/UserContext';
+export { TokenInfo } from './context/TokenInfo';
 
 export { PredefinedAddonActivateMode } from './enums/PredefinedAddonActivateMode';
 export { PredefinedAddonCategory } from './enums/PredefinedAddonCategory';
@@ -40,6 +42,7 @@ export { PredefinedAddonHostMode } from './enums/PredefinedAddonHostMode';
 export { PredefinedAddonInactiveMode } from './enums/PredefinedAddonInactiveMode';
 export { PredefinedChromeState } from './enums/PredefinedChromeState';
 export { PredefinedConfigurationItemType } from './enums/PredefinedConfigurationItemType';
+export { PredefinedEnvironment } from './enums/PredefinedEnvironment';
 export { PredefinedHostType } from './enums/PredefinedHostType';
 export { PredefinedLocale } from './enums/PredefinedLocale';
 export { PredefinedMeetingState } from './enums/PredefinedMeetingState';
@@ -77,6 +80,8 @@ export { HostRequestTooltipsMessage } from './messages/host/HostRequestTooltipsM
 
 export { Message } from './messages/Message';
 export { MessageType } from './messages/MessageType';
+
+export { Task } from './sdk/Task';
 
 export class ExtensibilitySdk {
   private activeListener: boolean = false;

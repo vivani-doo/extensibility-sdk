@@ -1,10 +1,13 @@
-import { InitializationContext } from '../context/InitializationContext';
 import { DiagnosticContext } from '../context/DiagnosticContext';
 import { HostContext } from '../context/HostContext';
+import { InitializationContext } from '../context/InitializationContext';
 import { MeetContext } from '../context/MeetContext';
 import runtime from '../context/RuntimeContext';
 import { SessionContext } from '../context/SessionContext';
 import { UserContext } from '../context/UserContext';
+import { PredefinedLocale } from '../enums/PredefinedLocale';
+import { PredefinedMeetingState } from '../enums/PredefinedMeetingState';
+import { PredefinedTheme } from '../enums/PredefinedTheme';
 import { EventOrigin } from '../logging/EventOrigin';
 import { EventType } from '../logging/EventType';
 import logger from '../logging/Logger';
@@ -14,9 +17,6 @@ import { HostEventInitMessage } from '../messages/host/HostEventInitMessage';
 import { Message } from '../messages/Message';
 import { MessageType } from '../messages/MessageType';
 import { validHostOrigin } from './utils';
-import { PredefinedMeetingState } from '../enums/PredefinedMeetingState';
-import { PredefinedTheme } from '../enums/PredefinedTheme';
-import { PredefinedLocale } from '../enums/PredefinedLocale';
 
 export class MessageReceiver {
   /**
@@ -203,11 +203,14 @@ export class MessageReceiver {
     initializationContext.sessionId = initMessage.sessionId;
     initializationContext.state = initMessage.state ?? PredefinedMeetingState.UNDEFINED;
     initializationContext.participants = initMessage.participants ?? [];
-    
+
     initializationContext.host = new HostContext();
     initializationContext.host.urlParams = initMessage.locationSearchParams;
     initializationContext.host.locale = runtime.locale;
     initializationContext.host.configuration = runtime.configuration;
+    initializationContext.host.token = initMessage.token;
+    initializationContext.host.environment = initMessage.environment;
+    initializationContext.host.version = initMessage.version;
 
     const userContext = new UserContext();
     const meetContext = new MeetContext();
