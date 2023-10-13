@@ -6,11 +6,11 @@ import { EventOrigin } from '../logging/EventOrigin';
 import { EventType } from '../logging/EventType';
 import logger from '../logging/Logger';
 import { LogLevel } from '../logging/LogLevel';
-import { DecorationMessage } from '../messages/DecorationMessage';
+import { ClientRequestDecorateMessage } from '../messages/client/ClientRequestDecorateMessage';
+import { ClientRequestNavigateMessage } from '../messages/client/ClientRequestNavigateMessage';
+import { ClientRequestNotifyMessage } from '../messages/client/ClientRequestNotifyMessage';
 import { Message } from '../messages/Message';
 import { MessageType } from '../messages/MessageType';
-import { NavigationMessage } from '../messages/NavigationMessage';
-import { NotificationMessage } from '../messages/NotificationMessage';
 
 export class MessageSender {
   /**
@@ -27,7 +27,7 @@ export class MessageSender {
   public notify = async (text: string, type: PredefinedNotificationType) => {
     await this.verifySdkInitialized();
 
-    const message = new NotificationMessage();
+    const message = new ClientRequestNotifyMessage();
     message.notificationText = text;
     message.notificationType = type;
     this.sendMessage(message, true);
@@ -52,7 +52,7 @@ export class MessageSender {
   public decorate = async (value: string) => {
     await this.verifySdkInitialized();
 
-    const message = new DecorationMessage();
+    const message = new ClientRequestDecorateMessage();
     message.value = value;
 
     this.sendMessage(message, true);
@@ -82,7 +82,7 @@ export class MessageSender {
   ) => {
     await this.verifySdkInitialized();
 
-    const message = new NavigationMessage();
+    const message = new ClientRequestNavigateMessage();
     message.destination = destination;
     message.id = id;
     message.params = params;
@@ -128,7 +128,7 @@ export class MessageSender {
       logger.current.log({
         origin: EventOrigin.ADDON,
         type: EventType.INTERNAL,
-        messageType: MessageType.INIT,
+        messageType: MessageType.HOST_EVENT_INIT,
         level: LogLevel.Error,
         message: error,
         context: [runtime.origin],

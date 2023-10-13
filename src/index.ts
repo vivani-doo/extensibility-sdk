@@ -1,5 +1,5 @@
 import { AppContext } from './context/AppContext';
-import { LoadingContext } from './context/LoadingContext';
+import { DiagnosticContext } from './context/DiagnosticContext';
 import runtime, { RuntimeContext } from './context/RuntimeContext';
 import { PredefinedNavigationDestination } from './enums/PredefinedNavigationDestination';
 import { PredefinedNotificationType } from './enums/PredefinedNotificationType';
@@ -8,9 +8,9 @@ import { EventType } from './logging/EventType';
 import { ILogger } from './logging/ILogger';
 import logger from './logging/Logger';
 import { LogLevel } from './logging/LogLevel';
+import { ClientEventReadyMessage } from './messages/client/ClientEventReadyMessage';
 import { Message } from './messages/Message';
 import { MessageType } from './messages/MessageType';
-import { ReadyMessage } from './messages/ReadyMessage';
 import { MessageReceiver } from './sdk/MessageReceiver';
 import { MessageSender } from './sdk/MessageSender';
 
@@ -26,7 +26,6 @@ export { UserContextKeys } from './context/keys/UserContextKeys';
 export { AppContext } from './context/AppContext';
 export { ContextParam } from './context/ContextParam';
 export { HostContext } from './context/HostContext';
-export { LoadingContext } from './context/LoadingContext';
 export { MeetContext } from './context/MeetContext';
 export { RuntimeContext } from './context/RuntimeContext';
 export { SessionContext } from './context/SessionContext';
@@ -35,6 +34,7 @@ export { UserContext } from './context/UserContext';
 
 export { PredefinedAddonActivateMode } from './enums/PredefinedAddonActivateMode';
 export { PredefinedAddonCategory } from './enums/PredefinedAddonCategory';
+export { PredefinedAddonHostMode } from './enums/PredefinedAddonHostMode';
 export { PredefinedAddonInactiveMode } from './enums/PredefinedAddonInactiveMode';
 export { PredefinedChromeState } from './enums/PredefinedChromeState';
 export { PredefinedConfigurationItemType } from './enums/PredefinedConfigurationItemType';
@@ -61,14 +61,21 @@ export { ManifestHost } from './manifest/ManifestHost';
 export { ManifestRuntime } from './manifest/ManifestRuntime';
 export { ManifestStore } from './manifest/ManifestStore';
 
-export { DecorationMessage } from './messages/DecorationMessage';
-export { InitMessage } from './messages/InitMessage';
-export { LoadInfoMessage } from './messages/LoadInfoMessage';
+export { ClientEventReadyMessage } from './messages/client/ClientEventReadyMessage';
+export { ClientRequestDecorateMessage } from './messages/client/ClientRequestDecorateMessage';
+export { ClientRequestEvironmentMessage } from './messages/client/ClientRequestEvironmentMessage';
+export { ClientRequestNavigateMessage } from './messages/client/ClientRequestNavigateMessage';
+export { ClientRequestNotifyMessage } from './messages/client/ClientRequestNotifyMessage';
+export { ClientRequestSnapshotMessage } from './messages/client/ClientRequestSnapshotMessage';
+
+export { HostEventDiagnosticMessage } from './messages/host/HostEventDiagnosticMessage';
+export { HostEventInitMessage } from './messages/host/HostEventInitMessage';
+export { HostEventParticipantsMessage } from './messages/host/HostEventParticipantsMessage';
+export { HostEventStateMessage } from './messages/host/HostEventStateMessage';
+export { HostRequestTooltipsMessage } from './messages/host/HostRequestTooltipsMessage';
+
 export { Message } from './messages/Message';
 export { MessageType } from './messages/MessageType';
-export { NavigationMessage } from './messages/NavigationMessage';
-export { NotificationMessage } from './messages/NotificationMessage';
-export { ReadyMessage } from './messages/ReadyMessage';
 
 export class ExtensibilitySdk {
   private activeListener: boolean = false;
@@ -86,7 +93,7 @@ export class ExtensibilitySdk {
    *
    * @memberof ExtensibilitySdk
    */
-  public onLoad!: (context: LoadingContext) => void;
+  public onLoad!: (context: DiagnosticContext) => void;
 
   public onMessage!: (message: Message) => void;
 
@@ -147,18 +154,6 @@ export class ExtensibilitySdk {
         context: [JSON.stringify(message)],
       });
     };
-
-    // Default implementation of a handler showing a toast if loading times are longer then 2 seconds
-    this.onLoad = (ctx: LoadingContext) => {
-      logger.current.log({
-        origin: EventOrigin.HOST,
-        type: EventType.MESSAGE,
-        messageType: MessageType.READY,
-        level: LogLevel.Info,
-        message: `[MXT] Addon loading context:${ctx}`,
-        context: [JSON.stringify(ctx)],
-      });
-    };
   }
 
   public init = () => {
@@ -176,13 +171,13 @@ export class ExtensibilitySdk {
         window.addEventListener('message', this.messageReceiver.handleReceivedMessage);
       }
 
-      const message = new ReadyMessage();
+      const message = new ClientEventReadyMessage();
       const postMessage = JSON.stringify(message);
 
       logger.current.log({
         origin: EventOrigin.ADDON,
         type: EventType.MESSAGE,
-        messageType: MessageType.READY,
+        messageType: MessageType.CLIENT_EVENT_READY,
         level: LogLevel.Info,
         message: `[MXT] Addon is sending ${message.type} message to host`,
         context: [],

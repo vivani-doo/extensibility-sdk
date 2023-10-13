@@ -4,15 +4,15 @@
  * report back to their own telemetry infrastructure.
  *
  * @export
- * @class LoadingContext
+ * @class DiagnosticContext
  */
-export class LoadingContext {
+export class DiagnosticContext {
   /**
    * Duration how long it took for addon to be loaded.
    * Measured as time between addon start (iframe element creation) to iframe onloaded event.
    *
    * @type {number}
-   * @memberof LoadingContext
+   * @memberof DiagnosticContext
    */
   public loadTime!: number;
 
@@ -20,7 +20,7 @@ export class LoadingContext {
    * Duration how long it took from start(iframe element creation) to host receiving Ready message.
    *
    * @type {number}
-   * @memberof LoadingContext
+   * @memberof DiagnosticContext
    */
   public readyTime!: number;
 }

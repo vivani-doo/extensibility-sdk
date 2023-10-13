@@ -1,26 +1,34 @@
-import { ConfigurationValue } from '../configuration/ConfigurationValue';
-import { ContextParam } from '../context/ContextParam';
-import { UrlParam } from '../context/UrlParam';
-import { PredefinedLocale } from '../enums/PredefinedLocale';
-import { PredefinedTheme } from '../enums/PredefinedTheme';
-import { Manifest } from '../manifest/Manifest';
-import { Message } from './Message';
-import { MessageType } from './MessageType';
+import { ConfigurationValue } from '../../configuration/ConfigurationValue';
+import { ContextParam } from '../../context/ContextParam';
+import { UrlParam } from '../../context/UrlParam';
+import { PredefinedLocale } from '../../enums/PredefinedLocale';
+import { PredefinedTheme } from '../../enums/PredefinedTheme';
+import { Manifest } from '../../manifest/Manifest';
+import { Message } from '../Message';
+import { MessageType } from '../MessageType';
 
-export class InitMessage extends Message {
+/**
+ * Message sent from host to client containing in its payload the context information
+ * client needs to initialize addon experience.
+ *
+ * @export
+ * @class HostEventInitMessage
+ * @extends {Message}
+ */
+export class HostEventInitMessage extends Message {
   /**
    *Creates an instance of InitMessage.
-   * @memberof InitMessage
+   * @memberof HostEventInitMessage
    */
   constructor() {
-    super(MessageType.INIT);
+    super(MessageType.HOST_EVENT_INIT);
   }
 
   /**
    * An application manifest definition used to initialize this extension.
    *
    * @type {Application}
-   * @memberof InitMessage
+   * @memberof HostEventInitMessage
    */
   manifest!: Manifest;
 
@@ -29,7 +37,7 @@ export class InitMessage extends Message {
    * provided by user.
    *
    * @type {ConfigurationItem[]}
-   * @memberof InitMessage
+   * @memberof HostEventInitMessage
    */
   configuration: ConfigurationValue[] = [];
 
@@ -37,7 +45,7 @@ export class InitMessage extends Message {
    * Collection of the context parameters
    *
    * @type {ContextParam[]}
-   * @memberof InitMessage
+   * @memberof HostEventInitMessage
    */
   context: ContextParam[] = [];
 
@@ -45,7 +53,7 @@ export class InitMessage extends Message {
    * Language locale to be used in rendering addon.
    *
    * @type {Locale}
-   * @memberof InitMessage
+   * @memberof HostEventInitMessage
    */
   locale: PredefinedLocale = PredefinedLocale.EN;
 
@@ -54,7 +62,7 @@ export class InitMessage extends Message {
    * in the moment of loading addons
    *
    * @type {UrlParam[]}
-   * @memberof InitMessage
+   * @memberof HostEventInitMessage
    */
   locationSearchParams: UrlParam[] = [];
 
@@ -64,7 +72,7 @@ export class InitMessage extends Message {
    * e2e tracking or it can be used when reporting an addon issue to Meet.
    *
    * @type {string}
-   * @memberof RuntimeContext
+   * @memberof HostEventInitMessage
    */
   sessionId!: string;
 
@@ -72,7 +80,7 @@ export class InitMessage extends Message {
    * A theme addon should be using in rendering.
    *
    * @type {PredefinedTheme}
-   * @memberof InitMessage
+   * @memberof HostEventInitMessage
    */
   theme: PredefinedTheme = PredefinedTheme.LIGHT;
 }

@@ -1,6 +1,6 @@
 import { AppContext } from '../context/AppContext';
+import { DiagnosticContext } from '../context/DiagnosticContext';
 import { HostContext } from '../context/HostContext';
-import { LoadingContext } from '../context/LoadingContext';
 import { MeetContext } from '../context/MeetContext';
 import runtime from '../context/RuntimeContext';
 import { SessionContext } from '../context/SessionContext';
@@ -9,8 +9,8 @@ import { EventOrigin } from '../logging/EventOrigin';
 import { EventType } from '../logging/EventType';
 import logger from '../logging/Logger';
 import { LogLevel } from '../logging/LogLevel';
-import { InitMessage } from '../messages/InitMessage';
-import { LoadInfoMessage } from '../messages/LoadInfoMessage';
+import { HostEventDiagnosticMessage } from '../messages/host/HostEventDiagnosticMessage';
+import { HostEventInitMessage } from '../messages/host/HostEventInitMessage';
 import { Message } from '../messages/Message';
 import { MessageType } from '../messages/MessageType';
 import { validHostOrigin } from './utils';
@@ -24,7 +24,7 @@ export class MessageReceiver {
    */
   constructor(
     private onInit: (cxt: AppContext) => void,
-    private onLoad: (context: LoadingContext) => void,
+    private onLoad: (context: DiagnosticContext) => void,
   ) {}
 
   public handleReceivedMessage = (messageEvent: MessageEvent) => {
@@ -50,23 +50,38 @@ export class MessageReceiver {
     });
 
     switch (addonMessage.type) {
-      case MessageType.INIT: {
-        const initMessage = addonMessage as InitMessage;
+      case MessageType.HOST_EVENT_INIT: {
+        const initMessage = addonMessage as HostEventInitMessage;
         const context = this.preprocessInitMessage(initMessage);
         this.onInit(context);
         break;
       }
-      case MessageType.HOST_LOAD_INFO:
-        const context = this.handleLoadInfoMessage(addonMessage as LoadInfoMessage);
+      case MessageType.HOST_EVENT_DIAG:
+        const context = this.handleLoadInfoMessage(addonMessage as HostEventDiagnosticMessage);
         this.onLoad(context);
         break;
-      case MessageType.READY:
-      case MessageType.REQUEST_DECORATION_UPDATE:
-      case MessageType.REQUEST_NOTIFY:
+
+      case MessageType.HOST_EVENT_PARTICIPANTS:
+      case MessageType.HOST_EVENT_STATE:
+      case MessageType.HOST_REQUEST_TOOLTIPS:
         logger.current.log({
           origin: EventOrigin.ADDON,
           type: EventType.INTERNAL,
-          message: `[MXT][MessageReceiver] :: onReceived - Client event ${addonMessage.type} received from host (ERROR)`,
+          message: `[MXT][MessageReceiver] :: onReceived - valid host event ${addonMessage.type} received and forwarded`,
+          level: LogLevel.Info,
+          context: [JSON.stringify(addonMessage)],
+        });
+        break;
+      case MessageType.CLIENT_EVENT_READY:
+      case MessageType.CLIENT_REQUEST_DECORATE:
+      case MessageType.CLIENT_REQUEST_NOTIFY:
+      case MessageType.CLIENT_REQUEST_ENVIRONMENT:
+      case MessageType.CLIENT_REQUEST_NAVIGATE:
+      case MessageType.CLIENT_REQUEST_SNAPSHOT:
+        logger.current.log({
+          origin: EventOrigin.ADDON,
+          type: EventType.INTERNAL,
+          message: `[MXT][MessageReceiver] :: onReceived - Client event ${addonMessage.type} received from host - ERROR`,
           level: LogLevel.Error,
           context: [JSON.stringify(addonMessage)],
         });
@@ -76,7 +91,7 @@ export class MessageReceiver {
           origin: EventOrigin.ADDON,
           type: EventType.INTERNAL,
           message: `[MXT][MessageReceiver] :: onReceived - Unknown event type: ${addonMessage.type}`,
-          level: LogLevel.Warning,
+          level: LogLevel.Error,
           context: [JSON.stringify(addonMessage)],
         });
     }
@@ -154,7 +169,7 @@ export class MessageReceiver {
   };
 
   private initializeOrigin = (hostMessage: Message, messageEvent: MessageEvent) => {
-    if (hostMessage.type !== MessageType.INIT) {
+    if (hostMessage.type !== MessageType.HOST_EVENT_INIT) {
       return null;
     }
 
@@ -174,7 +189,7 @@ export class MessageReceiver {
     return runtime.origin;
   };
 
-  private preprocessInitMessage = (initMessage: InitMessage): AppContext => {
+  private preprocessInitMessage = (initMessage: HostEventInitMessage): AppContext => {
     runtime.manifest = initMessage.manifest;
     runtime.configuration = initMessage.configuration;
     runtime.locale = initMessage.locale;
@@ -224,7 +239,7 @@ export class MessageReceiver {
     return appContext;
   };
 
-  private handleLoadInfoMessage = (message: LoadInfoMessage): LoadingContext => {
+  private handleLoadInfoMessage = (message: HostEventDiagnosticMessage): DiagnosticContext => {
     let logLevel = LogLevel.Debug;
     if (message.loadTime > 2000) {
       logLevel = LogLevel.Error;
@@ -241,7 +256,7 @@ export class MessageReceiver {
       context: [JSON.stringify(message)],
     });
 
-    const loadContext: LoadingContext = {
+    const loadContext: DiagnosticContext = {
       loadTime: message.loadTime,
       readyTime: message.readyTime,
     };
