@@ -234,15 +234,14 @@ export class ExtensibilitySdk {
     this.messageSender.navigate(destination, id, params);
   };
 
-    /**
+  /**
    * Sends request to Meet hosting app to update environment
    *
    * @memberof MessageSender
    */
   public environment = async (chrome?: PredefinedChromeState, mode?: PredefinedAddonHostMode, panel?: string) => {
-    this.messageSender.environment(chrome, mode, panel)
-  }
-
+    this.messageSender.environment(chrome, mode, panel);
+  };
 
   /**
    * Sends request to Meet hosting app to take a snapshot
@@ -250,8 +249,8 @@ export class ExtensibilitySdk {
    * @memberof MessageSender
    */
   public snapshot = async () => {
-        this.messageSender.snapshot()
-  }
+    this.messageSender.snapshot();
+  };
 
   private messageSender = new MessageSender(this.initTask);
   private messageReceiver = new MessageReceiver(this.resolveInitPromise, this.onLoad);
