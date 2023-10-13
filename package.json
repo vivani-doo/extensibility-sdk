@@ -1,7 +1,7 @@
 {
   "name": "meet-extensibility-sdk",
   "private": false,
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "SDK for easy creation of addons for meet.rs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
