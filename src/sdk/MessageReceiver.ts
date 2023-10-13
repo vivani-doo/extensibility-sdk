@@ -1,4 +1,4 @@
-import { AppContext } from '../context/AppContext';
+import { InitializationContext } from '../context/InitializationContext';
 import { DiagnosticContext } from '../context/DiagnosticContext';
 import { HostContext } from '../context/HostContext';
 import { MeetContext } from '../context/MeetContext';
@@ -14,16 +14,19 @@ import { HostEventInitMessage } from '../messages/host/HostEventInitMessage';
 import { Message } from '../messages/Message';
 import { MessageType } from '../messages/MessageType';
 import { validHostOrigin } from './utils';
+import { PredefinedMeetingState } from '../enums/PredefinedMeetingState';
+import { PredefinedTheme } from '../enums/PredefinedTheme';
+import { PredefinedLocale } from '../enums/PredefinedLocale';
 
 export class MessageReceiver {
   /**
    * Creates an instance of MessageReceiver.
-   * @param {(cxt: AppContext) => void} onInit
+   * @param {(cxt: InitializationContext) => void} onInit
    * @param {(context: LoadingContext) => void} onLoad
    * @memberof MessageReceiver
    */
   constructor(
-    private onInit: (cxt: AppContext) => void,
+    private onInit: (cxt: InitializationContext) => void,
     private onLoad: (context: DiagnosticContext) => void,
   ) {}
 
@@ -61,7 +64,6 @@ export class MessageReceiver {
         this.onLoad(context);
         break;
 
-      case MessageType.HOST_EVENT_PARTICIPANTS:
       case MessageType.HOST_EVENT_STATE:
       case MessageType.HOST_REQUEST_TOOLTIPS:
         logger.current.log({
@@ -189,21 +191,23 @@ export class MessageReceiver {
     return runtime.origin;
   };
 
-  private preprocessInitMessage = (initMessage: HostEventInitMessage): AppContext => {
+  private preprocessInitMessage = (initMessage: HostEventInitMessage): InitializationContext => {
     runtime.manifest = initMessage.manifest;
     runtime.configuration = initMessage.configuration;
-    runtime.locale = initMessage.locale;
+    runtime.locale = initMessage.locale ?? PredefinedLocale.UNDEFINED;
     runtime.sessionId = initMessage.sessionId;
-    runtime.theme = initMessage.theme;
+    runtime.theme = initMessage.theme ?? PredefinedTheme.UNDEFINED;
 
-    const appContext = new AppContext();
-    appContext.configuration = initMessage.configuration;
-    appContext.sessionId = initMessage.sessionId;
-
-    appContext.host = new HostContext();
-    appContext.host.urlParams = initMessage.locationSearchParams;
-    appContext.host.locale = runtime.locale;
-    appContext.host.configuration = runtime.configuration;
+    const initializationContext = new InitializationContext();
+    initializationContext.configuration = initMessage.configuration;
+    initializationContext.sessionId = initMessage.sessionId;
+    initializationContext.state = initMessage.state ?? PredefinedMeetingState.UNDEFINED;
+    initializationContext.participants = initMessage.participants ?? [];
+    
+    initializationContext.host = new HostContext();
+    initializationContext.host.urlParams = initMessage.locationSearchParams;
+    initializationContext.host.locale = runtime.locale;
+    initializationContext.host.configuration = runtime.configuration;
 
     const userContext = new UserContext();
     const meetContext = new MeetContext();
@@ -213,17 +217,17 @@ export class MessageReceiver {
 
       let handled = userContext.initFrom(param);
       if (handled) {
-        appContext.user = appContext.user || userContext;
+        initializationContext.user = initializationContext.user || userContext;
       }
 
       handled = meetContext.initFrom(param);
       if (handled) {
-        appContext.meet = appContext.meet || meetContext;
+        initializationContext.meet = initializationContext.meet || meetContext;
       }
 
       handled = sessionContext.initFrom(param);
       if (handled) {
-        appContext.session = appContext.session || sessionContext;
+        initializationContext.session = initializationContext.session || sessionContext;
       }
     }
 
@@ -234,12 +238,12 @@ export class MessageReceiver {
       level: LogLevel.Debug,
       context: [
         `message: ${JSON.stringify(initMessage)}`,
-        `context: ${JSON.stringify(appContext)}`,
+        `context: ${JSON.stringify(initializationContext)}`,
         `origin: ${runtime.origin || 'N/A'}`,
       ],
     });
 
-    return appContext;
+    return initializationContext;
   };
 
   private handleLoadInfoMessage = (message: HostEventDiagnosticMessage): DiagnosticContext => {

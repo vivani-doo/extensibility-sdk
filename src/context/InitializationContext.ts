@@ -1,17 +1,18 @@
 import { ConfigurationValue } from '../configuration/ConfigurationValue';
-import { ContextParam } from './ContextParam';
+import { PredefinedMeetingState } from '../enums/PredefinedMeetingState';
 import { HostContext } from './HostContext';
 import { MeetContext } from './MeetContext';
+import { ParticipantInfo } from './ParticipantInfo';
 import { SessionContext } from './SessionContext';
 import { UserContext } from './UserContext';
 
-export class AppContext {
+export class InitializationContext {
   /**
    * Zero or more configuration values sent from host which addon
    * should use to initialize itself
    *
    * @type {ConfigurationValue[]}
-   * @memberof AppContext
+   * @memberof InitializationContext
    */
   public configuration?: ConfigurationValue[] = [];
 
@@ -21,7 +22,7 @@ export class AppContext {
    * e2e tracking or it can be used when reporting an addon issue to Meet.
    *
    * @type {string}
-   * @memberof RuntimeContext
+   * @memberof InitializationContext
    */
   public sessionId!: string;
 
@@ -29,7 +30,7 @@ export class AppContext {
    * User context
    *
    * @type {UserContext}
-   * @memberof MeetContext
+   * @memberof InitializationContext
    */
   public user?: UserContext;
 
@@ -37,7 +38,7 @@ export class AppContext {
    * Meet addon hosting context
    *
    * @type {HostContext}
-   * @memberof MeetContext
+   * @memberof InitializationContext
    */
   public host!: HostContext;
 
@@ -45,7 +46,7 @@ export class AppContext {
    * Meet context
    *
    * @type {MeetContext}
-   * @memberof AppContext
+   * @memberof InitializationContext
    */
   public meet?: MeetContext;
 
@@ -53,25 +54,23 @@ export class AppContext {
    * Session context
    *
    * @type {SessionContext}
-   * @memberof AppContext
+   * @memberof InitializationContext
    */
   public session!: SessionContext;
 
-  public toParams = (): ContextParam[] => {
-    const params: ContextParam[] = [];
+  /**
+   *  State of the meeting in the moment of the addon initialization
+   *
+   * @type {PredefinedMeetingState}
+   * @memberof InitializationContext
+   */
+  state!: PredefinedMeetingState;
 
-    if (this.user) {
-      this.user.toParams().forEach((p) => params.push(p));
-    }
-
-    if (this.meet) {
-      this.meet.toParams().forEach((p) => params.push(p));
-    }
-
-    if (this.session) {
-      this.session.toParams().forEach((p) => params.push(p));
-    }
-
-    return params;
-  };
+  /**
+   * Collection of Meet participants in the moment when addon is initialized
+   *
+   * @type {ParticipantInfo[]}
+   * @memberof InitializationContext
+   */
+  participants: ParticipantInfo[] = [];
 }

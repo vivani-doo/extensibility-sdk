@@ -1,4 +1,4 @@
-import { AppContext } from '../context/AppContext';
+import { InitializationContext } from '../context/InitializationContext';
 import runtime from '../context/RuntimeContext';
 import { PredefinedAddonHostMode } from '../enums/PredefinedAddonHostMode';
 import { PredefinedChromeState } from '../enums/PredefinedChromeState';
@@ -19,10 +19,10 @@ import { MessageType } from '../messages/MessageType';
 export class MessageSender {
   /**
    * Creates an instance of MessageSender.
-   * @param {Task<AppContext>} [initTask]
+   * @param {Task<InitializationContext>} [initTask]
    * @memberof MessageSender
    */
-  constructor(private initTask?: Task<AppContext>) {}
+  constructor(private initTask?: Task<InitializationContext>) {}
 
   /**
    * Sends request to Meet hosting app to update environment

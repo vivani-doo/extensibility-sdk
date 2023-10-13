@@ -8,11 +8,7 @@ export enum MessageType {
    * Message sent from host to addon containing the diagnostic info on addon loading
    */
   HOST_EVENT_DIAG = 'host:event:diag',
-  /**
-   * Message sent from the host to addon containing updated list of Meet participants
-   * e.g. Display name, color, theme?
-   */
-  HOST_EVENT_PARTICIPANTS = 'host:event:participants',
+
   /**
    * Event message of this type os sent when host change the context in which addon
    * exists (theme change, fullscreen state, active addon, meeting state changed etc)

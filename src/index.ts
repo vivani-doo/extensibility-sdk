@@ -1,4 +1,4 @@
-import { AppContext } from './context/AppContext';
+import { InitializationContext } from './context/InitializationContext';
 import { DiagnosticContext } from './context/DiagnosticContext';
 import runtime, { RuntimeContext } from './context/RuntimeContext';
 import { PredefinedAddonHostMode } from './enums/PredefinedAddonHostMode';
@@ -25,7 +25,7 @@ export { ClientContextKeys } from './context/keys/ClientContextKeys';
 export { MeetContextKeys } from './context/keys/MeetContextKeys';
 export { UserContextKeys } from './context/keys/UserContextKeys';
 
-export { AppContext } from './context/AppContext';
+export { InitializationContext as AppContext } from './context/InitializationContext';
 export { ContextParam } from './context/ContextParam';
 export { HostContext } from './context/HostContext';
 export { MeetContext } from './context/MeetContext';
@@ -72,7 +72,6 @@ export { ClientRequestSnapshotMessage } from './messages/client/ClientRequestSna
 
 export { HostEventDiagnosticMessage } from './messages/host/HostEventDiagnosticMessage';
 export { HostEventInitMessage } from './messages/host/HostEventInitMessage';
-export { HostEventParticipantsMessage } from './messages/host/HostEventParticipantsMessage';
 export { HostEventStateMessage } from './messages/host/HostEventStateMessage';
 export { HostRequestTooltipsMessage } from './messages/host/HostRequestTooltipsMessage';
 
@@ -82,7 +81,7 @@ export { MessageType } from './messages/MessageType';
 export class ExtensibilitySdk {
   private activeListener: boolean = false;
   private initTimer?: number;
-  private initTask?: Task<AppContext>;
+  private initTask?: Task<InitializationContext>;
 
   public getRuntime = (): RuntimeContext => runtime;
 
@@ -99,7 +98,7 @@ export class ExtensibilitySdk {
 
   public onMessage!: (message: Message) => void;
 
-  private resolveInitPromise = (cxt: AppContext) => {
+  private resolveInitPromise = (cxt: InitializationContext) => {
     window.clearTimeout(this.initTimer);
     if (this.initTask) {
       this.initTask.onfulfilled(JSON.parse(JSON.stringify(cxt)));
@@ -163,8 +162,8 @@ export class ExtensibilitySdk {
       return this.initTask.promise;
     }
 
-    this.initTask = new Task<AppContext>();
-    this.initTask.promise = new Promise<AppContext>((resolve, reject) => {
+    this.initTask = new Task<InitializationContext>();
+    this.initTask.promise = new Promise<InitializationContext>((resolve, reject) => {
       this.initTask!.onfulfilled = resolve;
       this.initTask!.onrejected = reject;
 

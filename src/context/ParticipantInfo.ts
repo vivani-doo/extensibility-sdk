@@ -1,4 +1,4 @@
-import { PredefinedRole } from '../../enums/PredefinedRole';
+import { PredefinedRole } from '../enums/PredefinedRole';
 
 export class ParticipantInfo {
   /**

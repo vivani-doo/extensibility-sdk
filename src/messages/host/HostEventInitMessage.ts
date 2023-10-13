@@ -1,11 +1,9 @@
 import { ConfigurationValue } from '../../configuration/ConfigurationValue';
 import { ContextParam } from '../../context/ContextParam';
 import { UrlParam } from '../../context/UrlParam';
-import { PredefinedLocale } from '../../enums/PredefinedLocale';
-import { PredefinedTheme } from '../../enums/PredefinedTheme';
 import { Manifest } from '../../manifest/Manifest';
-import { Message } from '../Message';
 import { MessageType } from '../MessageType';
+import { HostEventStateMessage } from './HostEventStateMessage';
 
 /**
  * Message sent from host to client containing in its payload the context information
@@ -15,7 +13,7 @@ import { MessageType } from '../MessageType';
  * @class HostEventInitMessage
  * @extends {Message}
  */
-export class HostEventInitMessage extends Message {
+export class HostEventInitMessage extends HostEventStateMessage {
   /**
    *Creates an instance of InitMessage.
    * @memberof HostEventInitMessage
@@ -50,14 +48,6 @@ export class HostEventInitMessage extends Message {
   context: ContextParam[] = [];
 
   /**
-   * Language locale to be used in rendering addon.
-   *
-   * @type {Locale}
-   * @memberof HostEventInitMessage
-   */
-  locale: PredefinedLocale = PredefinedLocale.EN;
-
-  /**
    * Collection of window location search parameters
    * in the moment of loading addons
    *
@@ -75,12 +65,4 @@ export class HostEventInitMessage extends Message {
    * @memberof HostEventInitMessage
    */
   sessionId!: string;
-
-  /**
-   * A theme addon should be using in rendering.
-   *
-   * @type {PredefinedTheme}
-   * @memberof HostEventInitMessage
-   */
-  theme: PredefinedTheme = PredefinedTheme.LIGHT;
 }

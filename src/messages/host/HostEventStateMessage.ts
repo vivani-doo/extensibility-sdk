@@ -1,3 +1,4 @@
+import { ParticipantInfo } from '../../context/ParticipantInfo';
 import { PredefinedAddonHostMode } from '../../enums/PredefinedAddonHostMode';
 import { PredefinedChromeState } from '../../enums/PredefinedChromeState';
 import { PredefinedLocale } from '../../enums/PredefinedLocale';
@@ -19,8 +20,8 @@ export class HostEventStateMessage extends Message {
    *Creates an instance of InitMessage.
    * @memberof HostEventStateMessage
    */
-  constructor() {
-    super(MessageType.HOST_EVENT_INIT);
+  constructor(type?: MessageType) {
+    super(type ?? MessageType.HOST_EVENT_INIT);
   }
 
   /**
@@ -70,4 +71,12 @@ export class HostEventStateMessage extends Message {
    * @memberof HostEventStateMessage
    */
   state?: PredefinedMeetingState;
+
+  /**
+   * Collection of Meet participants in the moment when addon is initialized
+   *
+   * @type {ParticipantInfo[]}
+   * @memberof InitializationContext
+   */
+  participants?: ParticipantInfo[];
 }
