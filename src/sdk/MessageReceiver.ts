@@ -197,6 +197,9 @@ export class MessageReceiver {
     runtime.theme = initMessage.theme;
 
     const appContext = new AppContext();
+    appContext.configuration = initMessage.configuration;
+    appContext.sessionId = initMessage.sessionId;
+
     appContext.host = new HostContext();
     appContext.host.urlParams = initMessage.locationSearchParams;
     appContext.host.locale = runtime.locale;
