@@ -1,0 +1,41 @@
+{
+  "name": "meet-extensibility-sdk",
+  "private": false,
+  "version": "0.6.1",
+  "description": "SDK for easy creation of addons for meet.rs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "check": "npm run build && npm run pretty:fix  && npm run test",
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "package": "npm run dts-bundle && npm run copy-to-dist",
+    "dts-bundle": "npx dts-bundle --configJson dts-bundle.json",
+    "copy-to-dist": "npx copyfiles \"./build/**/*.js*\" dist -a -u 1",
+    "pretty:fix-docs": "prettier --write docs/**/*.md README.md",
+    "pretty:fix": "prettier --write '**/*.{ts,json,md,yml,yaml}'",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "deploy": "npm run check && npm run package && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vivani-doo/extensibility-sdk.git"
+  },
+  "author": "Vivani doo, Svilajnac <office@meet.rs>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vivani-doo/extensibility-sdk/issues"
+  },
+  "homepage": "https://github.com/vivani-doo/extensibility-sdk#readme",
+  "devDependencies": {
+    "@types/jest": "^29.5.5",
+    "copyfiles": "^2.4.1",
+    "dts-bundle": "^0.7.3",
+    "jest": "^29.7.0",
+    "markdownlint-cli": "^0.37.0",
+    "prettier": "^3.0.3",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2"
+  }
+}
