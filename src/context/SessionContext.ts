@@ -17,8 +17,6 @@ export class SessionContext {
 
   public addonTenantId!: string;
 
-
-
   /**
    * Attempts to initialize the opportunity context with a given parameter.
    *
