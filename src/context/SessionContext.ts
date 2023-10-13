@@ -1,4 +1,7 @@
-export interface SessionContext {
+import { ContextParam } from './ContextParam';
+import { SessionContextKeys } from './keys/SessionContextKeys';
+
+export class SessionContext {
   /**
    * Identifier of the addon for which the
    * hashed participant info is valid for
@@ -6,21 +9,70 @@ export interface SessionContext {
    * @type {string}
    * @memberof ParticipantInfo
    */
-  addonIdentifier: string;
+  public addonIdentifier!: string;
 
-  addonSessionId: string;
+  public addonSessionId!: string;
 
-  addonUserId: string;
+  public addonUserId!: string;
 
-  addonTenantId: string;
+  public addonTenantId!: string;
+
+
 
   /**
-   * Session id value is generated on host and is unique per addon loading.
-   * If can be used used to correlate events on server and addon and enable
-   * e2e tracking or it can be used when reporting an addon issue to Meet.
+   * Attempts to initialize the opportunity context with a given parameter.
    *
-   * @type {string}
-   * @memberof SessionContext
+   * @memberof OpportunityContext
    */
-  sessionId: string;
+  initFrom = (param: ContextParam): boolean => {
+    switch (param.key) {
+      case SessionContextKeys.ADDON_ID:
+        this.addonIdentifier = param.value!;
+        break;
+      case SessionContextKeys.ADDON_SESSION_ID:
+        this.addonSessionId = param.value!;
+        break;
+      case SessionContextKeys.ADDON_USER_ID:
+        this.addonUserId = param.value!;
+        break;
+      case SessionContextKeys.ADDON_TENANT_ID:
+        this.addonTenantId = param.value!;
+        break;
+
+      default:
+        return false;
+    }
+
+    return true;
+  };
+
+  public toParams(): ContextParam[] {
+    const params: ContextParam[] = [];
+    if (this.addonIdentifier) {
+      params.push({
+        key: SessionContextKeys.ADDON_ID,
+        value: this.addonIdentifier,
+      });
+    }
+    if (this.addonSessionId) {
+      params.push({
+        key: SessionContextKeys.ADDON_SESSION_ID,
+        value: this.addonSessionId,
+      });
+    }
+    if (this.addonUserId) {
+      params.push({
+        key: SessionContextKeys.ADDON_USER_ID,
+        value: this.addonUserId,
+      });
+    }
+    if (this.addonTenantId) {
+      params.push({
+        key: SessionContextKeys.ADDON_TENANT_ID,
+        value: this.addonTenantId,
+      });
+    }
+
+    return params;
+  }
 }

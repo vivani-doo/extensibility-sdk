@@ -1,6 +1,5 @@
 import { ConfigurationValue } from '../configuration/ConfigurationValue';
 import { ContextParam } from '../context/ContextParam';
-import { SessionContext } from '../context/SessionContext';
 import { UrlParam } from '../context/UrlParam';
 import { PredefinedLocale } from '../enums/PredefinedLocale';
 import { PredefinedTheme } from '../enums/PredefinedTheme';
@@ -59,7 +58,15 @@ export class InitMessage extends Message {
    */
   locationSearchParams: UrlParam[] = [];
 
-  public session!: SessionContext;
+  /**
+   * Session id value is generated on host and is unique per addon loading.
+   * If can be used used to correlate events on server and addon and enable
+   * e2e tracking or it can be used when reporting an addon issue to Meet.
+   *
+   * @type {string}
+   * @memberof RuntimeContext
+   */
+  sessionId!: string;
 
   /**
    * A theme addon should be using in rendering.

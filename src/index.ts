@@ -8,13 +8,11 @@ import { EventType } from './logging/EventType';
 import { ILogger } from './logging/ILogger';
 import logger from './logging/Logger';
 import { LogLevel } from './logging/LogLevel';
-import { DecorationMessage } from './messages/DecorationMessage';
 import { Message } from './messages/Message';
 import { MessageType } from './messages/MessageType';
-import { NavigationMessage } from './messages/NavigationMessage';
-import { NotificationMessage } from './messages/NotificationMessage';
 import { ReadyMessage } from './messages/ReadyMessage';
-import { handleReceivedMessage } from './sdk/MessageReceiver';
+import { MessageReceiver } from './sdk/MessageReceiver';
+import { MessageSender } from './sdk/MessageSender';
 
 export { ConfigurationItem } from './configuration/ConfigurationItem';
 export { ConfigurationItemOption } from './configuration/ConfigurationItemOption';
@@ -72,12 +70,6 @@ export { NavigationMessage } from './messages/NavigationMessage';
 export { NotificationMessage } from './messages/NotificationMessage';
 export { ReadyMessage } from './messages/ReadyMessage';
 
-class Task<T> {
-  public promise!: Promise<T>;
-  public onfulfilled!: (value: T) => void;
-  public onrejected?: (reason: any) => void;
-}
-
 export class ExtensibilitySdk {
   private activeListener: boolean = false;
   private initTimer?: number;
@@ -97,6 +89,13 @@ export class ExtensibilitySdk {
   public onLoad!: (context: LoadingContext) => void;
 
   public onMessage!: (message: Message) => void;
+
+  private resolveInitPromise = (cxt: AppContext) => {
+    window.clearTimeout(this.initTimer);
+    if (this.initTask) {
+      this.initTask.onfulfilled(JSON.parse(JSON.stringify(cxt)));
+    }
+  };
 
   /**
    * Changes the implementation of the logger used by SDK for
@@ -174,7 +173,7 @@ export class ExtensibilitySdk {
 
       if (!this.activeListener) {
         this.activeListener = true;
-        window.addEventListener('message', (e) => handleReceivedMessage(e, this.resolveInitPromise, this.onLoad));
+        window.addEventListener('message', this.messageReceiver.handleReceivedMessage);
       }
 
       const message = new ReadyMessage();
@@ -208,21 +207,7 @@ export class ExtensibilitySdk {
    * @memberof ExtensibilitySdk
    */
   public notify = async (text: string, type: PredefinedNotificationType) => {
-    await this.verifySdkInitialized();
-
-    const message = new NotificationMessage();
-    message.notificationText = text;
-    message.notificationType = type;
-    this.sendMessage(message, true);
-
-    logger.current.log({
-      origin: EventOrigin.ADDON,
-      type: EventType.MESSAGE,
-      messageType: message.type,
-      level: LogLevel.Info,
-      message: `[MXT] Addon is sending ${message.type} message to host`,
-      context: [`Notification text: ${text}`, `Notification type: ${type}`],
-    });
+    this.messageSender.notify(text, type);
   };
 
   /**
@@ -233,21 +218,7 @@ export class ExtensibilitySdk {
    * @memberof ExtensibilitySdk
    */
   public decorate = async (value: string) => {
-    await this.verifySdkInitialized();
-
-    const message = new DecorationMessage();
-    message.value = value;
-
-    this.sendMessage(message, true);
-
-    logger.current.log({
-      origin: EventOrigin.ADDON,
-      type: EventType.MESSAGE,
-      messageType: message.type,
-      level: LogLevel.Info,
-      message: `[MXT] Addon is sending ${message.type} message to host`,
-      context: [`Decoration text: ${value}`],
-    });
+    this.messageSender.decorate(value);
   };
 
   /**
@@ -263,74 +234,11 @@ export class ExtensibilitySdk {
     id?: string,
     params?: { [key: string]: string },
   ) => {
-    await this.verifySdkInitialized();
-
-    const message = new NavigationMessage();
-    message.destination = destination;
-    message.id = id;
-    message.params = params;
-    this.sendMessage(message, true);
-
-    logger.current.log({
-      origin: EventOrigin.ADDON,
-      type: EventType.MESSAGE,
-      messageType: message.type,
-      level: LogLevel.Info,
-      message: `[MXT] Addon is sending ${message.type} message to host`,
-      context: [],
-    });
+    this.messageSender.navigate(destination, id, params);
   };
 
-  private sendMessage<T extends Message>(message: T, logged?: boolean) {
-    this.verifySdkInitialized();
-
-    if (!runtime.origin) {
-      console.error('You can not send messages before SDK is initialized', message);
-      return;
-    }
-    const postMessage = JSON.stringify(message);
-
-    if (!logged) {
-      logger.current.log({
-        origin: EventOrigin.ADDON,
-        type: EventType.MESSAGE,
-        messageType: message.type,
-        level: LogLevel.Info,
-        message: `[MXT] Addon is sending ${message.type} message to host`,
-        context: [postMessage, runtime.origin],
-      });
-    }
-
-    window.parent.postMessage(postMessage, runtime.origin);
-  }
-
-  private resolveInitPromise = (cxt: AppContext) => {
-    window.clearTimeout(this.initTimer);
-    if (this.initTask) {
-      this.initTask.onfulfilled(JSON.parse(JSON.stringify(cxt)));
-    }
-  };
-
-  private verifySdkInitialized = async () => {
-    // check if sdk.init() was called
-    if (!this.initTask && runtime.origin) {
-      const error = '[MXT] Please initialize SDK by calling sdk.init() before performing any additional calls';
-      logger.current.log({
-        origin: EventOrigin.ADDON,
-        type: EventType.INTERNAL,
-        messageType: MessageType.INIT,
-        level: LogLevel.Error,
-        message: error,
-        context: [runtime.origin],
-      });
-
-      // throw an error - case is THAT important
-      throw new Error(error);
-    }
-
-    // check if sdk.init() was resolved
-    await this.initTask;
-  };
+  private messageSender = new MessageSender(this.initTask);
+  private messageReceiver = new MessageReceiver(this.resolveInitPromise, this.onLoad);
 }
 
 declare global {
