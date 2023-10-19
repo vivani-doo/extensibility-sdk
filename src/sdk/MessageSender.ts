@@ -13,6 +13,8 @@ import { ClientRequestEvironmentMessage } from '../messages/client/ClientRequest
 import { ClientRequestNavigateMessage } from '../messages/client/ClientRequestNavigateMessage';
 import { ClientRequestNotifyMessage } from '../messages/client/ClientRequestNotifyMessage';
 import { ClientRequestSnapshotMessage } from '../messages/client/ClientRequestSnapshotMessage';
+import { HostRequestShellMessage } from '../messages/host/HostRequestShellMessage';
+import { HostRequestTooltipsMessage } from '../messages/host/HostRequestTooltipsMessage';
 import { Message } from '../messages/Message';
 import { MessageType } from '../messages/MessageType';
 import { Task } from './Task';
@@ -150,7 +152,51 @@ export class MessageSender {
     });
   };
 
-  private sendMessage<T extends Message>(message: T, logged?: boolean) {
+  /**
+   * Sends request to Meet hosting app to take a snapshot
+   *
+   * @memberof MessageSender
+   */
+  public requestShell = async (forced?: boolean) => {
+    await this.verifySdkInitialized();
+
+    const message = new HostRequestShellMessage();
+    message.forced = forced;
+    this.sendMessage(message, true);
+
+    logger.current.log({
+      origin: EventOrigin.ADDON,
+      type: EventType.MESSAGE,
+      messageType: message.type,
+      level: LogLevel.Info,
+      message: `[MXT] Addon is sending ${message.type} message to host`,
+      context: [],
+    });
+  };
+
+  /**
+   * Sends request to Meet hosting app to show tooltips
+   *
+   * @memberof MessageSender
+   */
+  public requestTooltips = async (forced?: boolean) => {
+    await this.verifySdkInitialized();
+
+    const message = new HostRequestTooltipsMessage();
+    message.forced = forced;
+    this.sendMessage(message, true);
+
+    logger.current.log({
+      origin: EventOrigin.ADDON,
+      type: EventType.MESSAGE,
+      messageType: message.type,
+      level: LogLevel.Info,
+      message: `[MXT] Addon is sending ${message.type} message to host`,
+      context: [],
+    });
+  };
+
+  public sendMessage<T extends Message>(message: T, logged?: boolean) {
     this.verifySdkInitialized();
 
     if (!runtime.origin) {

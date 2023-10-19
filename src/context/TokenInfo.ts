@@ -1,4 +1,4 @@
-export interface TokenInfo {
-  access_token: string;
-  expires_at: number;
+export class TokenInfo {
+  value!: string;
+  expireAt!: number;
 }

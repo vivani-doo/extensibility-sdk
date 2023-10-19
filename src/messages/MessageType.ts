@@ -15,10 +15,13 @@ export enum MessageType {
    */
   HOST_EVENT_STATE = 'host:event:state',
   /**
+   * Host requests from addon to host to show the shell
+   */
+  HOST_REQUEST_SHELL = 'host:request:shell',
+  /**
    * Host requests from addon to show its tooltips
    */
   HOST_REQUEST_TOOLTIPS = 'host:request:tooltips',
-
   /**
    * Message sent from client to host signalizing that the client is ready for initialization
    */

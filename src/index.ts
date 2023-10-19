@@ -33,6 +33,7 @@ export { MeetContext } from './context/MeetContext';
 export { RuntimeContext } from './context/RuntimeContext';
 export { SessionContext } from './context/SessionContext';
 export { UrlParam } from './context/UrlParam';
+export { ParticipantInfo } from './context/ParticipantInfo';
 export { UserContext } from './context/UserContext';
 export { TokenInfo } from './context/TokenInfo';
 
@@ -77,6 +78,7 @@ export { HostEventDiagnosticMessage } from './messages/host/HostEventDiagnosticM
 export { HostEventInitMessage } from './messages/host/HostEventInitMessage';
 export { HostEventStateMessage } from './messages/host/HostEventStateMessage';
 export { HostRequestTooltipsMessage } from './messages/host/HostRequestTooltipsMessage';
+export { HostRequestShellMessage } from './messages/host/HostRequestShellMessage';
 
 export { Message } from './messages/Message';
 export { MessageType } from './messages/MessageType';
@@ -255,6 +257,33 @@ export class ExtensibilitySdk {
   public snapshot = async () => {
     this.messageSender.snapshot();
   };
+
+  /**
+   * Sends request to Meet hosting app to take a snapshot
+   *
+   * @memberof MessageSender
+   */
+  public requestShell = async (forced?: boolean) => {
+    this.messageSender.requestShell(forced);
+  };
+
+  /**
+   * Sends request to Meet hosting app to show tooltips
+   *
+   * @memberof MessageSender
+   */
+  public requestTooltips = async (forced?: boolean) => {
+    this.messageSender.requestTooltips(forced);
+  };
+
+  /**
+   * Sends a message to  Meet hosting app to take a snapshot
+   *
+   * @memberof MessageSender
+   */
+  public sendMessage<T extends Message>(message: T, logged?: boolean) {
+    this.messageSender.sendMessage(message, logged);
+  }
 
   private messageSender = new MessageSender(this.initTask);
   private messageReceiver = new MessageReceiver(this.resolveInitPromise, this.onLoad);
