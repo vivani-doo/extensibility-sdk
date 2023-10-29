@@ -85,6 +85,20 @@ export { MessageType } from './messages/MessageType';
 
 export { Task } from './sdk/Task';
 
+export {
+  isClientDecorateMessage,
+  isClientEnvironmentMessage,
+  isClientNavigationMessage,
+  isClientNotificationMessage,
+  isClientReadyMessage,
+  isClientSnapshotMessage,
+  isHostDiagnosticsMessage,
+  isHostInitMessage,
+  isHostShellMessage,
+  isHostStateMessage,
+  isHostTooltipMessage,
+} from './sdk/messageGuards';
+
 export class ExtensibilitySdk {
   private activeListener: boolean = false;
   private initTimer?: number;
