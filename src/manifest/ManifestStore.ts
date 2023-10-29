@@ -18,4 +18,12 @@ export class ManifestStore {
   public visibility: PredefinedStoreType = PredefinedStoreType.PUBLIC;
 
   public title!: LocalizedString;
+
+  /**
+   * Addon store version
+   *
+   * @type {string}
+   * @memberof HostEventStateMessage
+   */
+  version!: string;
 }
