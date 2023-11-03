@@ -190,7 +190,17 @@ export class ExtensibilitySdk {
 
       if (!this.activeListener) {
         this.activeListener = true;
-        window.addEventListener('message', this.messageReceiver.handleReceivedMessage);
+        window.addEventListener('message', (e) => {
+          logger.current.log({
+            origin: EventOrigin.HOST,
+            type: EventType.MESSAGE,
+            messageType: MessageType.HOST_EVENT_INIT,
+            level: LogLevel.Info,
+            message: `[MXT] Addon received a message from host`,
+            context: [e.data],
+          });
+          this.messageReceiver.handleReceivedMessage(e);
+        });
       }
 
       const message = new ClientEventReadyMessage();

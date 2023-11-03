@@ -72,7 +72,7 @@ export const validHostOrigin = (origin: string): boolean => {
   if (!origin) {
     return false;
   }
-  const valid = origin.endsWith('meet.rs');
+  const valid = origin.endsWith('meet.rs') || origin.startsWith('https://localhost');
 
   if (!valid) {
     logger.current.log({
@@ -80,7 +80,7 @@ export const validHostOrigin = (origin: string): boolean => {
       type: EventType.INTERNAL,
       level: LogLevel.Trace,
       message: '[CXT][AddonSdk]::validHostOrigin - invalid origin',
-      context: [],
+      context: [origin],
     });
     return false;
   }
