@@ -1,6 +1,5 @@
 import { ConfigurationValue } from '../../configuration/ConfigurationValue';
 import { ContextParam } from '../../context/ContextParam';
-import { TokenInfo } from '../../context/TokenInfo';
 import { UrlParam } from '../../context/UrlParam';
 import { PredefinedEnvironment } from '../../enums/PredefinedEnvironment';
 import { Manifest } from '../../manifest/Manifest';
@@ -69,20 +68,12 @@ export class HostEventInitMessage extends HostEventStateMessage {
   sessionId!: string;
 
   /**
-   * Meet API access token (constrained to this session)
-   *
-   * @type {TokenInfo}
-   * @memberof InitializationContext
-   */
-  public token!: TokenInfo;
-
-  /**
    * Host environment
    *
    * @type {PredefinedEnvironment}
    * @memberof HostEventInitMessage
    */
-  public environment!: PredefinedEnvironment;
+  environment!: PredefinedEnvironment;
 
   /**
    * Host version
@@ -90,5 +81,5 @@ export class HostEventInitMessage extends HostEventStateMessage {
    * @type {string}
    * @memberof HostEventInitMessage
    */
-  public version!: string;
+  version!: string;
 }

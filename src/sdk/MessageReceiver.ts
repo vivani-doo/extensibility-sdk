@@ -208,7 +208,6 @@ export class MessageReceiver {
     initializationContext.host.urlParams = initMessage.locationSearchParams;
     initializationContext.host.locale = runtime.locale;
     initializationContext.host.configuration = runtime.configuration;
-    initializationContext.host.token = initMessage.token;
     initializationContext.host.environment = initMessage.environment;
     initializationContext.host.version = initMessage.version;
 
