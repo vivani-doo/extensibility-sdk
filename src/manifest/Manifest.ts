@@ -1,9 +1,9 @@
 import { AllContextKeys } from '../context/keys/AllContextKeys';
-import { type ManifestAuthor } from './ManifestAuthor';
-import { type ManifestConfigurationItem } from './ManifestConfigurationItem';
-import { type ManifestHost } from './ManifestHost';
-import { type ManifestRuntime } from './ManifestRuntime';
-import { type ManifestStore } from './ManifestStore';
+import { ManifestAuthor } from './ManifestAuthor';
+import { ManifestConfigurationItem } from './ManifestConfigurationItem';
+import { ManifestHost } from './ManifestHost';
+import { ManifestRuntime } from './ManifestRuntime';
+import { ManifestStore } from './ManifestStore';
 
 export class Manifest {
   /**
@@ -25,10 +25,10 @@ export class Manifest {
   /**
    * Collection of contextual property keys to be provided to addon during the runtime
    *
-   * @type {AllContextKeys[]}
+   * @type {AllContextKeys[] | '*'}
    * @memberof Manifest
    */
-  public context: AllContextKeys[] = [];
+  public context: AllContextKeys[] | '*' = [];
 
   /**
    * Addon hosting information
