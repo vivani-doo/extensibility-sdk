@@ -3,6 +3,8 @@ import { ContextParam } from '../../context/ContextParam';
 import { SessionInfo } from '../../context/SessionInfo';
 import { UrlParam } from '../../context/UrlParam';
 import { PredefinedEnvironment } from '../../enums/PredefinedEnvironment';
+import { PredefinedLocale } from '../../enums/PredefinedLocale';
+import { PredefinedTheme } from '../../enums/PredefinedTheme';
 import { Manifest } from '../../manifest/Manifest';
 import { MessageType } from '../MessageType';
 import { HostEventStateMessage } from './HostEventStateMessage';
@@ -85,10 +87,26 @@ export class HostEventInitMessage extends HostEventStateMessage {
   session!: SessionInfo;
 
   /**
-   * Host version
+   * Culture locale
+   *
+   * @type {PredefinedLocale}
+   * @memberof InitializationContext
+   */
+  locale!: PredefinedLocale;
+
+  /**
+   * Current theme
+   *
+   * @type {PredefinedTheme}
+   * @memberof InitializationContext
+   */
+  theme!: PredefinedTheme;
+
+  /**
+   * Host API version
    *
    * @type {string}
-   * @memberof HostEventInitMessage
+   * @memberof InitializationContext
    */
   version!: string;
 }

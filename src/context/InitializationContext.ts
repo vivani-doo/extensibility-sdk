@@ -1,5 +1,7 @@
 import { ConfigurationValue } from '../configuration/ConfigurationValue';
+import { PredefinedLocale } from '../enums/PredefinedLocale';
 import { PredefinedMeetingState } from '../enums/PredefinedMeetingState';
+import { PredefinedTheme } from '../enums/PredefinedTheme';
 import { HostContext } from './HostContext';
 import { MeetContext } from './MeetContext';
 import { ParticipantInfo } from './ParticipantInfo';
@@ -82,4 +84,28 @@ export class InitializationContext {
    * @memberof InitializationContext
    */
   tenant?: TenantContext;
+
+  /**
+   * Culture locale
+   *
+   * @type {PredefinedLocale}
+   * @memberof InitializationContext
+   */
+  locale!: PredefinedLocale;
+
+  /**
+   * Current theme
+   *
+   * @type {PredefinedTheme}
+   * @memberof InitializationContext
+   */
+  theme!: PredefinedTheme;
+
+  /**
+   * Host API version
+   *
+   * @type {string}
+   * @memberof InitializationContext
+   */
+  version!: string;
 }
