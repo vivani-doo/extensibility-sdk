@@ -31,7 +31,7 @@ export class Manifest {
   public context: AllContextKeys[] = [];
 
   /**
-   * Addon hosting information 
+   * Addon hosting information
    *
    * @type {ManifestHost}
    * @memberof Manifest
