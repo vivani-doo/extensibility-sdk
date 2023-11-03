@@ -3,7 +3,7 @@ import { HostContext } from '../context/HostContext';
 import { InitializationContext } from '../context/InitializationContext';
 import { MeetContext } from '../context/MeetContext';
 import runtime from '../context/RuntimeContext';
-import { SessionContext } from '../context/SessionContext';
+import { TenantContext } from '../context/TenantContext';
 import { UserContext } from '../context/UserContext';
 import { PredefinedLocale } from '../enums/PredefinedLocale';
 import { PredefinedMeetingState } from '../enums/PredefinedMeetingState';
@@ -200,6 +200,7 @@ export class MessageReceiver {
 
     const initializationContext = new InitializationContext();
     initializationContext.configuration = initMessage.configuration;
+    initializationContext.session = initMessage.session;
     initializationContext.sessionId = initMessage.sessionId;
     initializationContext.state = initMessage.state ?? PredefinedMeetingState.UNDEFINED;
     initializationContext.participants = initMessage.participants ?? [];
@@ -213,7 +214,7 @@ export class MessageReceiver {
 
     const userContext = new UserContext();
     const meetContext = new MeetContext();
-    const sessionContext = new SessionContext();
+    const tenantContext = new TenantContext();
     for (let i = 0; i < initMessage.context.length; i++) {
       const param = initMessage.context[i];
 
@@ -227,9 +228,9 @@ export class MessageReceiver {
         initializationContext.meet = initializationContext.meet || meetContext;
       }
 
-      handled = sessionContext.initFrom(param);
+      handled = tenantContext.initFrom(param);
       if (handled) {
-        initializationContext.session = initializationContext.session || sessionContext;
+        initializationContext.tenant = initializationContext.tenant || tenantContext;
       }
     }
 

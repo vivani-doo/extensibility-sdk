@@ -22,16 +22,16 @@ export { ConfigurationItemOption } from './configuration/ConfigurationItemOption
 export { ConfigurationValue } from './configuration/ConfigurationValue';
 
 export { AllContextKeys } from './context/keys/AllContextKeys';
-export { ClientContextKeys } from './context/keys/ClientContextKeys';
 export { MeetContextKeys } from './context/keys/MeetContextKeys';
 export { UserContextKeys } from './context/keys/UserContextKeys';
+export { TenantContextKeys } from './context/keys/TenantContextKeys';
 
-export { InitializationContext as AppContext } from './context/InitializationContext';
+export { InitializationContext } from './context/InitializationContext';
 export { ContextParam } from './context/ContextParam';
 export { HostContext } from './context/HostContext';
 export { MeetContext } from './context/MeetContext';
 export { RuntimeContext } from './context/RuntimeContext';
-export { SessionContext } from './context/SessionContext';
+export { SessionInfo } from './context/SessionInfo';
 export { UrlParam } from './context/UrlParam';
 export { ParticipantInfo } from './context/ParticipantInfo';
 export { UserContext } from './context/UserContext';

@@ -1,53 +1,50 @@
-import { parseRole, PredefinedRole } from '../enums/PredefinedRole';
 import { ContextParam } from './ContextParam';
 import { UserContextKeys } from './keys/UserContextKeys';
 
 export class UserContext {
   /**
-   * Hashed addon identifer of the user
+   *  User email
    *
-   * @type {string}
+   * @type {(string | null)}
    * @memberof UserContext
    */
-  public id!: string;
+  public email?: string | null;
 
   /**
    * Url of the participant avatar (if any).
    * Avatar can be undefined if user has no avatar or
    * choose in user privacy settings not to share it with addons.
    *
-   * @type {string}
+   * @type {(string | null)}
    * @memberof UserContext
    */
   public avatarUrl?: string | null;
 
   /**
-   * Display name of the participant (if any).
+   * First name of the participant (if any).
    *
-   * Display name can be undefined if user choose in
-   * user privacy settings to not share it with addons.
-   * @type {string}
+   * @type {(string | null)}
    * @memberof UserContext
    */
-  public displayName?: string | null;
+  public firstName?: string | null;
+
+  /**
+   * Last  name of the participant (if any).
+   *
+   * @type {(string | null)}
+   * @memberof UserContext
+   */
+  public lastName?: string | null;
 
   /**
    * Color assigned to a principal user.
    * The color can be used by the application for personalizing
    * user specific UX elements.
    *
-   * @type {string}
+   * @type {(string | null)}
    * @memberof UserContext
    */
-  public color!: string;
-
-  /**
-   * Role participamnt has
-   *
-   * @type {PredefinedRole}
-   * @memberof UserContext
-   */
-  public role!: PredefinedRole;
+  public color?: string | null;
 
   /**
    * Attempts to initialize the opportunity context with a given parameter.
@@ -56,17 +53,20 @@ export class UserContext {
    */
   initFrom = (param: ContextParam): boolean => {
     switch (param.key) {
+      case UserContextKeys.AVATAR_URL:
+        this.avatarUrl = param.value;
+        break;
       case UserContextKeys.COLOR:
-        this.color = param.value!;
+        this.color = param.value;
         break;
-      case UserContextKeys.ID:
-        this.id = param.value!;
+      case UserContextKeys.EMAIL:
+        this.email = param.value;
         break;
-      case UserContextKeys.DISPLAY_NAME:
-        this.displayName = param.value;
+      case UserContextKeys.FIRST_NAME:
+        this.firstName = param.value;
         break;
-      case UserContextKeys.ROLE:
-        this.role = parseRole(param.value);
+      case UserContextKeys.LAST_NAME:
+        this.lastName = param.value;
         break;
       default:
         return false;
@@ -77,28 +77,34 @@ export class UserContext {
 
   public toParams(): ContextParam[] {
     const params: ContextParam[] = [];
+    if (this.avatarUrl) {
+      params.push({
+        key: UserContextKeys.AVATAR_URL,
+        value: this.avatarUrl,
+      });
+    }
     if (this.color) {
       params.push({
         key: UserContextKeys.COLOR,
         value: this.color,
       });
     }
-    if (this.id) {
+    if (this.email) {
       params.push({
-        key: UserContextKeys.ID,
-        value: this.id,
+        key: UserContextKeys.EMAIL,
+        value: this.email,
       });
     }
-    if (this.displayName) {
+    if (this.firstName) {
       params.push({
-        key: UserContextKeys.DISPLAY_NAME,
-        value: this.displayName,
+        key: UserContextKeys.FIRST_NAME,
+        value: this.firstName,
       });
     }
-    if (this.role) {
+    if (this.lastName) {
       params.push({
-        key: UserContextKeys.ROLE,
-        value: this.role.toString(),
+        key: UserContextKeys.LAST_NAME,
+        value: this.lastName,
       });
     }
 

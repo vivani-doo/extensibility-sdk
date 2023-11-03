@@ -5,9 +5,9 @@ import { PredefinedLocale } from '../enums/PredefinedLocale';
 import { LocalizedString } from '../i18n/LocalizedString';
 import { getLocalizedString, getUrlDomain, parameterizeUrl, tokenizeUrl } from './utils';
 
-const usrIdParam = { key: UserContextKeys.ID, value: 'uid-123' };
+const usrNameParam = { key: UserContextKeys.FIRST_NAME, value: 'uid-123' };
 const meetCodeParam = { key: MeetContextKeys.CODE, value: '112233' };
-const queryParams: ContextParam[] = [usrIdParam, meetCodeParam];
+const queryParams: ContextParam[] = [usrNameParam, meetCodeParam];
 
 describe('tokenizer tests', () => {
   test('untokenized url', () => {
@@ -19,21 +19,21 @@ describe('tokenizer tests', () => {
 
   describe('full tokenization', () => {
     test('all params known - routes', () => {
-      const url = 'https://someurl.com/{usr.id}/something/{meet.code}';
+      const url = 'https://someurl.com/{usr.fnm}/something/{meet.cod}';
       const result = tokenizeUrl(url, queryParams);
       expect(result.url).toEqual('https://someurl.com/uid-123/something/112233');
       expect(result.params).toEqual([]);
     });
 
     test('all params known - params', () => {
-      const url = 'https://someurl.com/something?oid={meet.code}&uid={usr.id}';
+      const url = 'https://someurl.com/something?oid={meet.cod}&uid={usr.fnm}';
       const result = tokenizeUrl(url, queryParams);
       expect(result.url).toEqual('https://someurl.com/something?oid=112233&uid=uid-123');
       expect(result.params).toEqual([]);
     });
 
     test('all params known - routes and params', () => {
-      const url = 'https://someurl.com/{usr.id}/something?oid={meet.code}';
+      const url = 'https://someurl.com/{usr.fnm}/something?oid={meet.cod}';
       const result = tokenizeUrl(url, queryParams);
       expect(result.url).toEqual('https://someurl.com/uid-123/something?oid=112233');
       expect(result.params).toEqual([]);
@@ -42,17 +42,17 @@ describe('tokenizer tests', () => {
 
   describe('partial tokenization', () => {
     test('some params known - routes', () => {
-      const url = 'https://someurl.com/{usr.id}/something/{abc.id}';
+      const url = 'https://someurl.com/{usr.fnm}/something/{abc.id}';
       const result = tokenizeUrl(url, queryParams);
       expect(result.url).toEqual('https://someurl.com/uid-123/something/{abc.id}');
       expect(result.params).toEqual([meetCodeParam]);
     });
 
     test('some params known - params', () => {
-      const url = 'https://someurl.com/something?oid={meet.code}&uid={abc.id}';
+      const url = 'https://someurl.com/something?oid={meet.cod}&uid={abc.id}';
       const result = tokenizeUrl(url, queryParams);
       expect(result.url).toEqual('https://someurl.com/something?oid=112233&uid={abc.id}');
-      expect(result.params).toEqual([usrIdParam]);
+      expect(result.params).toEqual([usrNameParam]);
     });
   });
 });
@@ -61,14 +61,14 @@ describe('parmeterization tests', () => {
   test('all the params are added as url params', () => {
     const url = 'https://someurl.com/test';
     const result = parameterizeUrl(url, queryParams);
-    expect(result).toBe('https://someurl.com/test?usr.id=uid-123&meet.code=112233');
+    expect(result).toBe('https://someurl.com/test?usr.fnm=uid-123&meet.cod=112233');
   });
 
   test('parametarization preserves fragment', () => {
     const url = 'https://someurl.com/webapp/index_dev.html?hc_reset#/Account/159978';
     const result = parameterizeUrl(url, queryParams);
     expect(result).toBe(
-      'https://someurl.com/webapp/index_dev.html?hc_reset&usr.id=uid-123&meet.code=112233#/Account/159978',
+      'https://someurl.com/webapp/index_dev.html?hc_reset&usr.fnm=uid-123&meet.cod=112233#/Account/159978',
     );
   });
 });

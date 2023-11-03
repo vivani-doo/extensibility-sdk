@@ -3,7 +3,8 @@ import { PredefinedMeetingState } from '../enums/PredefinedMeetingState';
 import { HostContext } from './HostContext';
 import { MeetContext } from './MeetContext';
 import { ParticipantInfo } from './ParticipantInfo';
-import { SessionContext } from './SessionContext';
+import { SessionInfo } from './SessionInfo';
+import { TenantContext } from './TenantContext';
 import { UserContext } from './UserContext';
 
 export class InitializationContext {
@@ -27,7 +28,7 @@ export class InitializationContext {
   public sessionId!: string;
 
   /**
-   * User context
+   * User context  (if user granted permissions)
    *
    * @type {UserContext}
    * @memberof InitializationContext
@@ -43,7 +44,7 @@ export class InitializationContext {
   public host!: HostContext;
 
   /**
-   * Meet context
+   * Meet context  (if user granted permissions)
    *
    * @type {MeetContext}
    * @memberof InitializationContext
@@ -53,10 +54,10 @@ export class InitializationContext {
   /**
    * Session context
    *
-   * @type {SessionContext}
+   * @type {SessionInfo}
    * @memberof InitializationContext
    */
-  public session!: SessionContext;
+  public session!: SessionInfo;
 
   /**
    *  State of the meeting in the moment of the addon initialization
@@ -73,4 +74,12 @@ export class InitializationContext {
    * @memberof InitializationContext
    */
   participants: ParticipantInfo[] = [];
+
+  /**
+   * Tenant context (if user granted permissions)
+   *
+   * @type {TenantContext}
+   * @memberof InitializationContext
+   */
+  tenant?: TenantContext;
 }

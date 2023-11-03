@@ -6,22 +6,27 @@
  */
 export enum UserContextKeys {
   /**
+   * User avatar url
+   */
+  AVATAR_URL = 'usr.avt',
+
+  /**
    * Addon user color
    */
   COLOR = 'usr.clr',
 
   /**
-   * Addon user id
+   * User email
    */
-  ID = 'usr.id',
+  EMAIL = 'usr.eml',
 
   /**
    * The display name of the user.
    */
-  DISPLAY_NAME = 'usr.dname',
+  FIRST_NAME = 'usr.fnm',
 
   /**
-   * The user's role
+   * The display name of the user.
    */
-  ROLE = 'usr.role',
+  LAST_NAME = 'usr.lnm',
 }

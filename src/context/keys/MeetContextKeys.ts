@@ -6,12 +6,22 @@
  */
 export enum MeetContextKeys {
   /**
-   * Addon user color
+   * Meet code
    */
-  CODE = 'meet.code',
+  CODE = 'meet.cod',
 
   /**
-   * Addon user color
+   * Meet duration
    */
-  TITLE = 'meet.title',
+  DURATION = 'meet.dur',
+
+  /**
+   * Role user has in this meet
+   */
+  ROLE = 'meet.role',
+
+  /**
+   * Meet title
+   */
+  TITLE = 'meet.tit',
 }

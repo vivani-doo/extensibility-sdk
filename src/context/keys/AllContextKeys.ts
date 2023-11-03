@@ -1,6 +1,5 @@
-import { ClientContextKeys } from './ClientContextKeys';
+import { TenantContextKeys } from './TenantContextKeys';
 import { MeetContextKeys } from './MeetContextKeys';
-import { SessionContextKeys } from './SessionContextKeys';
 import { UserContextKeys } from './UserContextKeys';
 
-export type AllContextKeys = UserContextKeys | ClientContextKeys | MeetContextKeys | SessionContextKeys;
+export type AllContextKeys = UserContextKeys | TenantContextKeys | MeetContextKeys;

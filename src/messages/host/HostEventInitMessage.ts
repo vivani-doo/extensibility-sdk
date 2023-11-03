@@ -1,5 +1,6 @@
 import { ConfigurationValue } from '../../configuration/ConfigurationValue';
 import { ContextParam } from '../../context/ContextParam';
+import { SessionInfo } from '../../context/SessionInfo';
 import { UrlParam } from '../../context/UrlParam';
 import { PredefinedEnvironment } from '../../enums/PredefinedEnvironment';
 import { Manifest } from '../../manifest/Manifest';
@@ -74,6 +75,14 @@ export class HostEventInitMessage extends HostEventStateMessage {
    * @memberof HostEventInitMessage
    */
   environment!: PredefinedEnvironment;
+
+  /**
+   * Hosting session information
+   *
+   * @type {SessionInfo}
+   * @memberof HostEventInitMessage
+   */
+  session!: SessionInfo;
 
   /**
    * Host version
