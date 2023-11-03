@@ -25,10 +25,10 @@ export class Manifest {
   /**
    * Collection of contextual property keys to be provided to addon during the runtime
    *
-   * @type {AllContextKeys[] | '*'}
+   * @type {(AllContextKeys | '*')[]}
    * @memberof Manifest
    */
-  public context: AllContextKeys[] | '*' = [];
+  public context: (AllContextKeys | '*')[] = [];
 
   /**
    * Addon hosting information
