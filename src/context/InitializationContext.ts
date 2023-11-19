@@ -1,6 +1,7 @@
 import { ConfigurationValue } from '../configuration/ConfigurationValue';
 import { PredefinedLocale } from '../enums/PredefinedLocale';
 import { PredefinedMeetingState } from '../enums/PredefinedMeetingState';
+import { PredefinedRole } from '../enums/PredefinedRole';
 import { PredefinedTheme } from '../enums/PredefinedTheme';
 import { HostContext } from './HostContext';
 import { MeetContext } from './MeetContext';
@@ -108,4 +109,12 @@ export class InitializationContext {
    * @memberof InitializationContext
    */
   version!: string;
+
+  /**
+   * User role in the current Meet
+   *
+   * @type {PredefinedRole}
+   * @memberof InitializationContext
+   */
+  role!: PredefinedRole;
 }

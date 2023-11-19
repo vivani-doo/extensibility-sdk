@@ -4,6 +4,7 @@ import { SessionInfo } from '../../context/SessionInfo';
 import { UrlParam } from '../../context/UrlParam';
 import { PredefinedEnvironment } from '../../enums/PredefinedEnvironment';
 import { PredefinedLocale } from '../../enums/PredefinedLocale';
+import { PredefinedRole } from '../../enums/PredefinedRole';
 import { PredefinedTheme } from '../../enums/PredefinedTheme';
 import { Manifest } from '../../manifest/Manifest';
 import { MessageType } from '../MessageType';
@@ -109,4 +110,12 @@ export class HostEventInitMessage extends HostEventStateMessage {
    * @memberof InitializationContext
    */
   version!: string;
+
+  /**
+   *
+   *
+   * @type {PredefinedRole}
+   * @memberof HostEventInitMessage
+   */
+  role!: PredefinedRole;
 }

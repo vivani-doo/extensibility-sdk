@@ -199,6 +199,7 @@ export class MessageReceiver {
     runtime.theme = initMessage.theme ?? PredefinedTheme.UNDEFINED;
 
     const initializationContext = new InitializationContext();
+    initializationContext.role = initMessage.role;
     initializationContext.configuration = initMessage.configuration;
     initializationContext.session = initMessage.session;
     initializationContext.sessionId = initMessage.sessionId;

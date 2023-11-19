@@ -1,6 +1,5 @@
 import { ContextParam } from './ContextParam';
 import { MeetContextKeys } from './keys/MeetContextKeys';
-import { parseRole, PredefinedRole } from '../enums/PredefinedRole';
 
 export class MeetContext {
   /**
@@ -18,14 +17,6 @@ export class MeetContext {
    * @memberof MeetContext
    */
   public duration?: number | null;
-
-  /**
-   * Current Meet code
-   *
-   * @type {string}
-   * @memberof MeetContext
-   */
-  public role?: PredefinedRole | null;
 
   /**
    * Current meet title
@@ -48,9 +39,6 @@ export class MeetContext {
       case MeetContextKeys.DURATION:
         this.duration = param.value ? parseInt(param.value) : null;
         break;
-      case MeetContextKeys.ROLE:
-        this.role = parseRole(param.value);
-        break;
       case MeetContextKeys.TITLE:
         this.title = param.value!;
         break;
@@ -67,6 +55,12 @@ export class MeetContext {
       params.push({
         key: MeetContextKeys.CODE,
         value: this.code,
+      });
+    }
+    if (this.duration) {
+      params.push({
+        key: MeetContextKeys.DURATION,
+        value: this.duration.toString(),
       });
     }
     if (this.title) {

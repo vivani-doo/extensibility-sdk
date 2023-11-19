@@ -16,11 +16,6 @@ export enum MeetContextKeys {
   DURATION = 'meet.dur',
 
   /**
-   * Role user has in this meet
-   */
-  ROLE = 'meet.role',
-
-  /**
    * Meet title
    */
   TITLE = 'meet.tit',
