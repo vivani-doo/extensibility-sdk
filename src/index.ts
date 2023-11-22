@@ -104,7 +104,11 @@ export class ExtensibilitySdk {
   private initTimer?: number;
   private initTask?: Task<InitializationContext>;
 
+  private sdkInitialized: boolean = false;
+
   public getRuntime = (): RuntimeContext => runtime;
+
+  public isInitialized = (): boolean => this.sdkInitialized;
 
   /**
    * Load handler is being invoked after the addon is fully loaded,
@@ -120,7 +124,6 @@ export class ExtensibilitySdk {
   public onMessage!: (message: Message) => void;
 
   private resolveInitPromise = (cxt: InitializationContext) => {
-    window.clearTimeout(this.initTimer);
     if (this.initTask) {
       this.initTask.onfulfilled(JSON.parse(JSON.stringify(cxt)));
     }
@@ -185,7 +188,11 @@ export class ExtensibilitySdk {
 
     this.initTask = new Task<InitializationContext>();
     this.initTask.promise = new Promise<InitializationContext>((resolve, reject) => {
-      this.initTask!.onfulfilled = resolve;
+      this.initTask!.onfulfilled = (ctx: InitializationContext) => {
+        window.clearTimeout(this.initTimer);
+        this.sdkInitialized = true;
+        resolve(ctx);
+      };
       this.initTask!.onrejected = reject;
 
       if (!this.activeListener) {
@@ -309,7 +316,7 @@ export class ExtensibilitySdk {
     this.messageSender.sendMessage(message, logged);
   }
 
-  private messageSender = new MessageSender(this.initTask);
+  private messageSender = new MessageSender(this.isInitialized);
   private messageReceiver = new MessageReceiver(this.resolveInitPromise, this.onLoad);
 }
 

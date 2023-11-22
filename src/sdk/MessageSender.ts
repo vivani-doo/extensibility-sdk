@@ -1,4 +1,3 @@
-import { InitializationContext } from '../context/InitializationContext';
 import runtime from '../context/RuntimeContext';
 import { PredefinedAddonHostMode } from '../enums/PredefinedAddonHostMode';
 import { PredefinedChromeState } from '../enums/PredefinedChromeState';
@@ -17,15 +16,14 @@ import { HostRequestShellMessage } from '../messages/host/HostRequestShellMessag
 import { HostRequestTooltipsMessage } from '../messages/host/HostRequestTooltipsMessage';
 import { Message } from '../messages/Message';
 import { MessageType } from '../messages/MessageType';
-import { Task } from './Task';
 
 export class MessageSender {
   /**
    * Creates an instance of MessageSender.
-   * @param {Task<InitializationContext>} [initTask]
+   * @param {() => boolean} isSdkInitialized
    * @memberof MessageSender
    */
-  constructor(private initTask?: Task<InitializationContext>) {}
+  constructor(private isSdkInitialized: () => boolean) {}
 
   /**
    * Sends request to Meet hosting app to update environment
@@ -33,7 +31,7 @@ export class MessageSender {
    * @memberof MessageSender
    */
   public environment = async (chrome?: PredefinedChromeState, mode?: PredefinedAddonHostMode, panel?: string) => {
-    await this.verifySdkInitialized();
+    this.verifySdkInitialized();
 
     const message = new ClientRequestEvironmentMessage();
     message.chrome = chrome;
@@ -57,7 +55,7 @@ export class MessageSender {
    * @memberof MessageSender
    */
   public snapshot = async () => {
-    await this.verifySdkInitialized();
+    this.verifySdkInitialized();
 
     const message = new ClientRequestSnapshotMessage();
     this.sendMessage(message, true);
@@ -78,7 +76,7 @@ export class MessageSender {
    * @memberof MessageSender
    */
   public notify = async (text: string, type: PredefinedNotificationType) => {
-    await this.verifySdkInitialized();
+    this.verifySdkInitialized();
 
     const message = new ClientRequestNotifyMessage();
     message.notificationText = text;
@@ -103,7 +101,7 @@ export class MessageSender {
    * @memberof MessageSender
    */
   public decorate = async (value: string) => {
-    await this.verifySdkInitialized();
+    this.verifySdkInitialized();
 
     const message = new ClientRequestDecorateMessage();
     message.value = value;
@@ -134,7 +132,7 @@ export class MessageSender {
     id?: string,
     params?: { [key: string]: string },
   ) => {
-    await this.verifySdkInitialized();
+    this.verifySdkInitialized();
 
     const message = new ClientRequestNavigateMessage();
     message.destination = destination;
@@ -158,7 +156,7 @@ export class MessageSender {
    * @memberof MessageSender
    */
   public requestShell = async (forced?: boolean) => {
-    await this.verifySdkInitialized();
+    this.verifySdkInitialized();
 
     const message = new HostRequestShellMessage();
     message.forced = forced;
@@ -180,7 +178,7 @@ export class MessageSender {
    * @memberof MessageSender
    */
   public requestTooltips = async (forced?: boolean) => {
-    await this.verifySdkInitialized();
+    this.verifySdkInitialized();
 
     const message = new HostRequestTooltipsMessage();
     message.forced = forced;
@@ -219,9 +217,9 @@ export class MessageSender {
     window.parent.postMessage(postMessage, runtime.origin);
   }
 
-  private verifySdkInitialized = async () => {
+  private verifySdkInitialized = () => {
     // check if sdk.init() was called
-    if (!this.initTask && runtime.origin) {
+    if (!this.isSdkInitialized()) {
       const error = '[MXT] Please initialize SDK by calling sdk.init() before performing any additional calls';
       logger.current.log({
         origin: EventOrigin.ADDON,
@@ -229,14 +227,11 @@ export class MessageSender {
         messageType: MessageType.HOST_EVENT_INIT,
         level: LogLevel.Error,
         message: error,
-        context: [runtime.origin],
+        context: [runtime.origin ?? 'N/A'],
       });
 
       // throw an error - case is THAT important
       throw new Error(error);
     }
-
-    // check if sdk.init() was resolved
-    await this.initTask;
   };
 }
